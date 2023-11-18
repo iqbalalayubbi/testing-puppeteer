@@ -3,7 +3,7 @@ import express from "express";
 import "dotenv/config";
 
 const app = express();
-const PORT = 3000;
+const PORT = 3000 || process.env.PORT;
 
 const data = {
     username: process.env.USERNAME_DATA,
@@ -52,9 +52,15 @@ const scrappingData = async () => {
 };
 
 app.get("/", async (req, res) => {
-    const taskData = await scrappingData();
-    // res.json(taskData);
-    res.send(taskData);
+    try {
+        const taskData = await scrappingData();
+        res.json(taskData);
+    } catch (err) {
+        console.log(err);
+        res.json({ message: "error" });
+    }
 });
 
 app.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+
+module.exports = app;
